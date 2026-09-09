@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "antri-server": {
+      "command": "node",
+      "args": [
+        "/Users/fachrimardliana/Downloads/apps/antri/mcp-server/index.mjs"
+      ]
+    }
+  }
+}

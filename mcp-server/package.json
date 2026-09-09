@@ -1,0 +1,13 @@
+{
+  "name": "antri-mcp-server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol Server for Sistem Antrian Terpadu",
+  "main": "index.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.0"
+  }
+}
