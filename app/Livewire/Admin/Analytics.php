@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('layouts.app')]
+#[Layout('layouts.admin')]
 class Analytics extends Component
 {
     public string $period = 'today'; // today, week, month, all

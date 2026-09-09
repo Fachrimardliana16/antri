@@ -8,7 +8,7 @@ use App\Models\User;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('layouts.app')]
+#[Layout('layouts.admin')]
 class Counters extends Component
 {
     public bool $showModal = false;

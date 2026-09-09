@@ -6,7 +6,7 @@ use App\Models\Service;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('layouts.app')]
+#[Layout('layouts.admin')]
 class Services extends Component
 {
     public bool $showModal = false;

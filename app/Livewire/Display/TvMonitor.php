@@ -18,7 +18,7 @@ class TvMonitor extends Component
     public function mount()
     {
         $this->videoUrl = AppSetting::getValue('video_url', 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1');
-        
+
         // Find latest calling/serving ticket
         $latestCalled = QueueTicket::whereIn('status', ['calling', 'serving'])
             ->whereDate('queue_date', today())
@@ -76,7 +76,7 @@ class TvMonitor extends Component
             ->orderBy('number', 'asc')
             ->get();
 
-        return view('livewire.display.tv-monitor', [
+        return view('livewire.display.tv-monitor-ultra', [
             'activeCounters' => $activeCounters,
             'allCounters' => $allCounters,
         ]);

@@ -7,7 +7,7 @@ use App\Models\AppSetting;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('layouts.app')]
+#[Layout('layouts.admin')]
 class Settings extends Component
 {
     public string $appName = '';

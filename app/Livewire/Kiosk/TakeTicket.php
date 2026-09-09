@@ -99,7 +99,7 @@ class TakeTicket extends Component
             ->with(['counters'])
             ->get();
 
-        return view('livewire.kiosk.take-ticket', [
+        return view('livewire.kiosk.take-ticket-ultra', [
             'services' => $services,
         ]);
     }
