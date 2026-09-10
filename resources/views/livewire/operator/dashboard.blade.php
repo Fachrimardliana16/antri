@@ -108,11 +108,11 @@
             </div>
 
             {{-- Action Buttons --}}
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {{-- NEXT --}}
+            <div class="flex gap-3">
+                {{-- NEXT - 30% --}}
                 <button type="button" wire:click="next"
-                        class="col-span-2 py-4 px-6 rounded-lg font-bold text-base text-white transition flex items-center justify-center gap-3 hover:opacity-90 active:scale-98"
-                        style="background-color: var(--primary, #1a56a8);">
+                        class="py-4 px-6 rounded-lg font-bold text-base text-white transition flex items-center justify-center gap-3 hover:opacity-90 active:scale-98"
+                        style="background-color: var(--primary, #1a56a8); width: 30%;">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
                     </svg>
@@ -122,10 +122,11 @@
                     </div>
                 </button>
 
-                {{-- RECALL --}}
+                {{-- RECALL - 50% --}}
                 <button type="button" wire:click="recall"
                         @if(!$currentCounter || !$currentCounter->current_ticket_id) disabled @endif
-                        class="py-3.5 px-4 rounded-lg font-semibold text-sm text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 transition disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1">
+                        class="py-3.5 px-4 rounded-lg font-semibold text-sm text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 transition disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1"
+                        style="width: 50%;">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                     </svg>
@@ -133,10 +134,11 @@
                     <span class="text-[10px] font-mono text-amber-500">[R]</span>
                 </button>
 
-                {{-- FINISH --}}
+                {{-- FINISH - 20% --}}
                 <button type="button" wire:click="finish"
                         @if(!$currentCounter || !$currentCounter->current_ticket_id) disabled @endif
-                        class="py-3.5 px-4 rounded-lg font-semibold text-sm text-green-700 bg-green-50 border border-green-200 hover:bg-green-100 transition disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1">
+                        class="py-3.5 px-4 rounded-lg font-semibold text-sm text-green-700 bg-green-50 border border-green-200 hover:bg-green-100 transition disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1"
+                        style="width: 20%;">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
@@ -149,7 +151,7 @@
             <div class="grid grid-cols-2 gap-3">
                 <button type="button" wire:click="skip"
                         @if(!$currentCounter || !$currentCounter->current_ticket_id) disabled @endif
-                        class="py-2.5 px-4 rounded-lg text-sm font-medium text-red-600 bg-red-50 border border-red-100 hover:bg-red-100 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        class="py-2.5 px-4 rounded-lg text-sm font-medium text-white bg-red-600 border border-red-700 hover:bg-red-700 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
                     </svg>
@@ -157,7 +159,7 @@
                 </button>
                 <button type="button" wire:click="openTransferModal"
                         @if(!$currentCounter || !$currentCounter->current_ticket_id) disabled @endif
-                        class="py-2.5 px-4 rounded-lg text-sm font-medium text-purple-600 bg-purple-50 border border-purple-100 hover:bg-purple-100 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        class="py-2.5 px-4 rounded-lg text-sm font-medium text-white bg-red-600 border border-red-700 hover:bg-red-700 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                     </svg>
