@@ -12,7 +12,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-#[Layout('layouts.kiosk')]
+#[Layout('layouts.kiosk-minimal')]
 class TakeTicket extends Component
 {
     public ?array $latestTicket = null;
@@ -99,7 +99,7 @@ class TakeTicket extends Component
             ->with(['counters'])
             ->get();
 
-        return view('livewire.kiosk.take-ticket-ultra', [
+        return view('livewire.kiosk.take-ticket', [
             'services' => $services,
         ]);
     }

@@ -13,7 +13,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-#[Layout('layouts.operator')]
+#[Layout('layouts.operator-minimal')]
 class DashboardNew extends Component
 {
     public ?Counter $myCounter = null;
@@ -366,7 +366,7 @@ class DashboardNew extends Component
             ->whereDate('queue_date', today())
             ->count();
 
-        return view('livewire.operator.dashboard-improved', [
+        return view('livewire.operator.dashboard-clean', [
             'waitingCount' => $waitingCount,
             'nextTicket' => $nextTicket,
             'todayServed' => $todayServed,

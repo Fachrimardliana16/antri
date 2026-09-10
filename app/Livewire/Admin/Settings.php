@@ -11,6 +11,9 @@ use Livewire\Component;
 class Settings extends Component
 {
     public string $appName = '';
+    public string $kioskSubtitle = '';
+    public string $tvSubtitle = '';
+    public string $logoUrl = '';
     public string $primaryColor = '#2563eb';
     public string $secondaryColor = '#06b6d4';
     public string $marqueeText = '';
@@ -23,6 +26,9 @@ class Settings extends Component
     {
         $settings = AppSetting::getAll();
         $this->appName = $settings['app_name'] ?? 'Sistem Antrian Terpadu';
+        $this->kioskSubtitle = $settings['kiosk_subtitle'] ?? 'Ambil Nomor Antrian';
+        $this->tvSubtitle = $settings['tv_subtitle'] ?? 'Monitor Panggilan Antrian';
+        $this->logoUrl = $settings['logo_url'] ?? '';
         $this->primaryColor = $settings['primary_color'] ?? '#2563eb';
         $this->secondaryColor = $settings['secondary_color'] ?? '#06b6d4';
         $this->marqueeText = $settings['marquee_text'] ?? '';
@@ -36,13 +42,21 @@ class Settings extends Component
     {
         $this->validate([
             'appName' => 'required|string|max:100',
+            'kioskSubtitle' => 'nullable|string|max:100',
+            'tvSubtitle' => 'nullable|string|max:100',
+            'logoUrl' => 'nullable|string|max:500',
             'primaryColor' => 'required|string|max:20',
             'secondaryColor' => 'required|string|max:20',
+            'marqueeText' => 'nullable|string|max:500',
+            'videoUrl' => 'nullable|string|max:500',
             'voiceRate' => 'required',
             'voicePitch' => 'required',
         ]);
 
         AppSetting::setValue('app_name', $this->appName);
+        AppSetting::setValue('kiosk_subtitle', $this->kioskSubtitle);
+        AppSetting::setValue('tv_subtitle', $this->tvSubtitle);
+        AppSetting::setValue('logo_url', $this->logoUrl);
         AppSetting::setValue('primary_color', $this->primaryColor);
         AppSetting::setValue('secondary_color', $this->secondaryColor);
         AppSetting::setValue('marquee_text', $this->marqueeText);

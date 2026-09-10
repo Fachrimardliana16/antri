@@ -22,27 +22,29 @@
 
     {{-- Top Bar: Counter & Status --}}
     <div class="gov-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        {{-- Counter Selector --}}
+        {{-- Counter Display (No Switching for Operators) --}}
         <div class="flex items-center gap-3">
             <span class="text-sm font-medium text-gray-600">Loket:</span>
-            <div class="flex flex-wrap gap-2">
-                @foreach($counters as $c)
-                    <button type="button"
-                            wire:click="setCounter({{ $c->id }})"
-                            class="px-3.5 py-1.5 rounded-md text-sm font-medium transition flex items-center gap-1.5 border
-                                   {{ $selectedCounterId === $c->id
-                                      ? 'bg-blue-600 text-white border-blue-600'
-                                      : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-700' }}">
-                        {{ $c->name }}
-                        @if($c->status === 'active')
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-                        @elseif($c->status === 'break')
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
-                        @else
-                            <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+            <div class="flex items-center gap-2">
+                @if($currentCounter)
+                    <div class="px-4 py-2 rounded-lg text-base font-bold border-2 border-blue-600 bg-blue-50 text-blue-900 flex items-center gap-2">
+                        {{ $currentCounter->name }}
+                        @if($currentCounter->service)
+                            <span class="text-xs font-normal text-blue-600">• {{ $currentCounter->service->name }}</span>
                         @endif
-                    </button>
-                @endforeach
+                        @if($currentCounter->status === 'active')
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                        @elseif($currentCounter->status === 'break')
+                            <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                        @else
+                            <span class="w-2 h-2 rounded-full bg-gray-400"></span>
+                        @endif
+                    </div>
+                @else
+                    <div class="px-4 py-2 rounded-lg text-sm bg-red-50 text-red-700 border border-red-200">
+                        Belum ditugaskan ke loket
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -168,14 +170,42 @@
         <div class="space-y-4">
 
             {{-- Daily Stats --}}
-            <div class="grid grid-cols-2 gap-3">
-                <div class="gov-card p-4">
-                    <div class="text-xs text-gray-500 font-medium">Selesai Hari Ini</div>
-                    <div class="text-2xl font-bold text-green-600 font-mono mt-1">{{ $servedTodayCount }}</div>
+            <div class="grid grid-cols-1 gap-3">
+                {{-- Current Ticket --}}
+                <div class="gov-card p-4 border-l-4 border-blue-600">
+                    <div class="text-xs text-gray-500 font-medium mb-1">Sedang Dilayani</div>
+                    @if($currentCounter && $currentCounter->currentTicket)
+                        <div class="text-3xl font-black text-blue-600 font-mono">{{ $currentCounter->currentTicket->ticket_number }}</div>
+                        <div class="text-xs text-gray-400 mt-1">Sejak {{ $currentCounter->currentTicket->called_at ? $currentCounter->currentTicket->called_at->format('H:i') : '-' }}</div>
+                    @else
+                        <div class="text-2xl font-bold text-gray-400">—</div>
+                    @endif
                 </div>
-                <div class="gov-card p-4">
-                    <div class="text-xs text-gray-500 font-medium">Dilewati</div>
-                    <div class="text-2xl font-bold text-red-500 font-mono mt-1">{{ $skippedTodayCount }}</div>
+
+                {{-- Next in Queue --}}
+                <div class="gov-card p-4 border-l-4 border-amber-500">
+                    <div class="text-xs text-gray-500 font-medium mb-1">Antrian Berikutnya</div>
+                    @if($waitingTickets->isNotEmpty())
+                        <div class="text-3xl font-black text-amber-600 font-mono">{{ $waitingTickets->first()->ticket_number }}</div>
+                        <div class="text-xs text-gray-400 mt-1">{{ $waitingTickets->count() }} menunggu</div>
+                    @else
+                        <div class="text-2xl font-bold text-gray-400">—</div>
+                        <div class="text-xs text-gray-400 mt-1">Tidak ada</div>
+                    @endif
+                </div>
+
+                {{-- Completed Today --}}
+                <div class="gov-card p-4 border-l-4 border-green-500">
+                    <div class="text-xs text-gray-500 font-medium mb-1">Selesai Hari Ini</div>
+                    <div class="text-3xl font-black text-green-600 font-mono">{{ $servedTodayCount }}</div>
+                    <div class="text-xs text-gray-400 mt-1">tiket</div>
+                </div>
+
+                {{-- Skipped --}}
+                <div class="gov-card p-4 border-l-4 border-red-500">
+                    <div class="text-xs text-gray-500 font-medium mb-1">Dilewati</div>
+                    <div class="text-3xl font-black text-red-500 font-mono">{{ $skippedTodayCount }}</div>
+                    <div class="text-xs text-gray-400 mt-1">tiket</div>
                 </div>
             </div>
 

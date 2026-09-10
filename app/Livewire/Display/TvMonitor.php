@@ -9,7 +9,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-#[Layout('layouts.tv')]
+#[Layout('layouts.tv-minimal')]
 class TvMonitor extends Component
 {
     public ?array $activeCall = null;
@@ -76,7 +76,7 @@ class TvMonitor extends Component
             ->orderBy('number', 'asc')
             ->get();
 
-        return view('livewire.display.tv-monitor-ultra', [
+        return view('livewire.display.tv-monitor', [
             'activeCounters' => $activeCounters,
             'allCounters' => $allCounters,
         ]);

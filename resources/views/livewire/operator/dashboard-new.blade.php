@@ -1,212 +1,318 @@
-<div class="h-full flex flex-col p-6 gap-6">
-    {{-- Counter Info Card --}}
-    @if(!$myCounter)
-        <div class="flex-1 flex items-center justify-center">
-            <div class="text-center max-w-md">
-                <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Loket Belum Ditugaskan</h3>
-                <p class="text-sm text-gray-600">Anda belum ditugaskan ke loket manapun. Silakan hubungi administrator untuk mendapatkan penugasan loket.</p>
-            </div>
-        </div>
-    @else
-        {{-- Loket Status & Control --}}
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-xl bg-slate-900 flex items-center justify-center">
-                        <span class="text-2xl font-bold text-white">{{ $myCounter->number }}</span>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900">{{ $myCounter->name }}</h2>
-                        <p class="text-sm text-gray-600 mt-1">
-                            {{ $myCounter->service ? $myCounter->service->name : 'Layanan Umum' }}
-                        </p>
-                    </div>
-                </div>
+<div wire:poll.3s
+     x-data="{
+         handleKey(e) {
+             if (['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
+             if (e.code === 'Space' || e.key === 'Enter') {
+                 e.preventDefault();
+                 $wire.next();
+             } else if (e.key === 'r' || e.key === 'R') {
+                 e.preventDefault();
+                 $wire.recall();
+             } else if (e.key === 's' || e.key === 'S') {
+                 e.preventDefault();
+                 $wire.skip();
+             } else if (e.key === 'f' || e.key === 'F') {
+                 e.preventDefault();
+                 $wire.finish();
+             }
+         }
+     }"
+     @keydown.window="handleKey($event)"
+     class="h-screen flex flex-col bg-slate-900 overflow-hidden">
 
-                {{-- Status Control --}}
-                <div class="flex items-center gap-3">
-                    @if($counterStatus === 'closed')
-                        <button wire:click="openCounter" 
-                                class="px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
-                            </svg>
-                            Buka Loket
-                        </button>
-                    @elseif($counterStatus === 'active')
-                        <div class="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="text-sm font-semibold text-emerald-700">Loket Aktif</span>
-                        </div>
-                        <button wire:click="takeBreak" 
-                                class="px-4 py-2 bg-amber-500 text-white font-medium rounded-lg hover:bg-amber-600 transition-colors">
-                            Istirahat
-                        </button>
-                        <button wire:click="closeCounter" 
-                                class="px-4 py-2 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700 transition-colors">
-                            Tutup Loket
-                        </button>
+    {{-- Header --}}
+    <div class="bg-slate-800 border-b border-slate-700 px-8 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                @php
+                    $logoUrl = \App\Models\AppSetting::getValue('logo_url', '');
+                    $appName = \App\Models\AppSetting::getValue('app_name', 'Sistem Antrian Terpadu');
+                @endphp
+
+                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+                    @if($logoUrl)
+                        <img src="{{ $logoUrl }}" alt="Logo" class="w-full h-full object-contain">
                     @else
-                        <div class="flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg">
-                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                            <span class="text-sm font-semibold text-amber-700">Istirahat</span>
-                        </div>
-                        <button wire:click="openCounter" 
-                                class="px-4 py-2 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors">
-                            Aktifkan Kembali
-                        </button>
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
                     @endif
                 </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white">{{ $appName }}</h1>
+                    <p class="text-blue-400 text-sm">Dashboard Operator</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <div class="text-sm text-slate-400">{{ auth()->user()->name }}</div>
+                    <div class="text-xs text-slate-500">{{ ucfirst(auth()->user()->role) }}</div>
+                </div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm rounded-lg transition border border-slate-600">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Logout
+                    </button>
+                </form>
             </div>
         </div>
+    </div>
 
-        <div class="flex-1 grid grid-cols-3 gap-6">
-            {{-- Left: Current Ticket Display --}}
-            <div class="col-span-2 bg-white rounded-lg border border-gray-200 flex flex-col">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Nomor Antrian Saat Ini</h3>
-                </div>
-                
-                <div class="flex-1 flex flex-col items-center justify-center p-8">
-                    @if($myCounter->currentTicket)
-                        <div class="text-center">
-                            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Sedang Dilayani</div>
-                            <div class="text-8xl font-black text-slate-900 mb-6 tracking-tight font-mono">
-                                {{ $myCounter->currentTicket->ticket_number }}
-                            </div>
-                            <div class="text-sm text-gray-600 mb-8">
-                                {{ $myCounter->currentTicket->service ? $myCounter->currentTicket->service->name : '' }}
-                            </div>
+    {{-- Flash Messages --}}
+    @if (session()->has('success'))
+        <div class="mx-8 mt-4 px-4 py-3 bg-green-500/20 border border-green-500 rounded-lg text-green-300 text-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session()->has('error'))
+        <div class="mx-8 mt-4 px-4 py-3 bg-red-500/20 border border-red-500 rounded-lg text-red-300 text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
 
-                            {{-- Action Buttons --}}
-                            <div class="flex items-center justify-center gap-3">
-                                <button wire:click="recallCurrent"
-                                        class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z"/>
-                                    </svg>
-                                    Panggil Ulang
-                                </button>
+    {{-- Main Content --}}
+    <div class="flex-1 overflow-auto p-8">
+        <div class="max-w-7xl mx-auto space-y-6">
 
-                                <button wire:click="completeCurrent"
-                                        class="px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    Selesai
-                                </button>
-
-                                <button wire:click="rejectCurrent"
-                                        class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    Tolak
-                                </button>
-                            </div>
-                        </div>
-                    @else
-                        <div class="text-center">
-                            <svg class="w-20 h-20 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
-                            </svg>
-                            <div class="text-xl font-semibold text-gray-400 mb-2">Tidak Ada Antrian Aktif</div>
-                            <p class="text-sm text-gray-500 mb-6">Klik tombol "Panggil Berikutnya" untuk memanggil antrian</p>
-
-                            @if($counterStatus === 'active')
-                                <button wire:click="callNext"
-                                        class="px-8 py-4 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800 transition-colors flex items-center gap-3 mx-auto">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    Panggil Berikutnya
-                                </button>
-                            @else
-                                <div class="text-sm text-gray-500">Buka loket untuk mulai melayani</div>
+            {{-- Counter Info Bar --}}
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <span class="text-sm font-medium text-slate-400">Loket Anda:</span>
+                    @if($currentCounter)
+                        <div class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold flex items-center gap-3">
+                            <span class="text-lg">{{ $currentCounter->name }}</span>
+                            @if($currentCounter->service)
+                                <span class="text-sm font-normal opacity-80">• {{ $currentCounter->service->name }}</span>
                             @endif
                         </div>
+                    @else
+                        <div class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 border border-red-500">
+                            Belum ditugaskan ke loket
+                        </div>
                     @endif
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-medium text-slate-500 uppercase">Status:</span>
+                    <button type="button" wire:click="updateStatus('active')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition {{ $counterStatus === 'active' ? 'bg-green-600 text-white' : 'bg-slate-700 text-green-400 hover:bg-slate-600' }}">
+                        Aktif
+                    </button>
+                    <button type="button" wire:click="updateStatus('break')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition {{ $counterStatus === 'break' ? 'bg-amber-500 text-white' : 'bg-slate-700 text-amber-400 hover:bg-slate-600' }}">
+                        Istirahat
+                    </button>
+                    <button type="button" wire:click="updateStatus('closed')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition {{ $counterStatus === 'closed' ? 'bg-red-600 text-white' : 'bg-slate-700 text-red-400 hover:bg-slate-600' }}">
+                        Tutup
+                    </button>
                 </div>
             </div>
 
-            {{-- Right: Queue Info & Stats --}}
-            <div class="space-y-6">
-                {{-- Next in Queue --}}
-                <div class="bg-white rounded-lg border border-gray-200 p-6">
-                    <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">Antrian Berikutnya</h3>
-                    
-                    @if($nextTicket)
-                        <div class="text-center py-4">
-                            <div class="text-4xl font-bold text-gray-900 mb-2 font-mono">{{ $nextTicket->ticket_number }}</div>
-                            <div class="text-xs text-gray-500">{{ $nextTicket->service ? $nextTicket->service->name : '' }}</div>
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <div class="text-2xl font-bold text-gray-300 mb-2">—</div>
-                            <div class="text-xs text-gray-400">Tidak ada antrian</div>
-                        </div>
-                    @endif
+            {{-- Grid Layout --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-600">Total Menunggu</span>
-                            <span class="text-lg font-bold text-gray-900">{{ $waitingCount }}</span>
+                {{-- Left: Current Ticket + Actions --}}
+                <div class="lg:col-span-2 space-y-6">
+
+                    {{-- Current Ticket Card --}}
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center">
+                        @if($currentCounter && $currentCounter->currentTicket)
+                            @php $ticket = $currentCounter->currentTicket; @endphp
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold mb-3">
+                                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                                Sedang Dilayani
+                            </div>
+                            <div class="text-sm text-slate-400 mb-2">{{ $ticket->service ? $ticket->service->name : 'Layanan' }}</div>
+                            <div class="text-9xl font-black font-mono text-blue-400 my-4">
+                                {{ $ticket->ticket_number }}
+                            </div>
+                            <div class="text-xs text-slate-500">
+                                Dipanggil: <span class="font-mono text-slate-400">{{ $ticket->called_at ? $ticket->called_at->format('H:i:s') : '-' }}</span>
+                            </div>
+                        @else
+                            <div class="py-12 text-slate-500">
+                                <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                                </svg>
+                                <p class="text-lg font-semibold">Belum Ada Nomor yang Dipanggil</p>
+                                <p class="text-sm text-slate-600 mt-2">Tekan <kbd class="px-2 py-1 bg-slate-700 rounded border border-slate-600 text-slate-400 font-mono">Space</kbd> untuk panggil berikutnya</p>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Action Buttons Container - Same width as card above --}}
+                    <div class="space-y-3">
+                        {{-- Main Actions Row: Next | Recall | Finish - 1 baris horizontal --}}
+                        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-3">
+                            <div class="grid grid-cols-10 gap-2">
+                                {{-- NEXT - 30% (3 cols) --}}
+                                <button type="button" wire:click="next"
+                                        class="col-span-3 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm transition flex flex-col items-center justify-center gap-1">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                                    </svg>
+                                    <span class="text-xs">PANGGIL BERIKUTNYA</span>
+                                    <span class="text-xs opacity-70">[Space]</span>
+                                </button>
+
+                                {{-- RECALL - 50% (5 cols) --}}
+                                <button type="button" wire:click="recall"
+                                        @if(!$currentCounter || !$currentCounter->current_ticket_id) disabled @endif
+                                        class="col-span-5 py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-sm transition disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                    <span class="text-xs">PANGGIL ULANG</span>
+                                    <span class="text-xs opacity-70">[R]</span>
+                                </button>
+
+                                {{-- FINISH - 20% (2 cols) --}}
+                                <button type="button" wire:click="finish"
+                                        @if(!$currentCounter || !$currentCounter->current_ticket_id) disabled @endif
+                                        class="col-span-2 py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-sm transition disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    <span class="text-xs">SELESAI</span>
+                                    <span class="text-xs opacity-70">[F]</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {{-- Secondary Actions Row: Skip | Transfer --}}
+                        <div class="grid grid-cols-2 gap-3">
+                            {{-- SKIP --}}
+                            <button type="button" wire:click="skip"
+                                    @if(!$currentCounter || !$currentCounter->current_ticket_id) disabled @endif
+                                    class="py-3 bg-red-600/80 hover:bg-red-600 text-white rounded-xl font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                                </svg>
+                                Lewati [S]
+                            </button>
+
+                            {{-- TRANSFER --}}
+                            <button type="button" wire:click="openTransferModal"
+                                    @if(!$currentCounter || !$currentCounter->current_ticket_id) disabled @endif
+                                    class="py-3 bg-purple-600/80 hover:bg-purple-600 text-white rounded-xl font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                </svg>
+                                Transfer
+                            </button>
                         </div>
                     </div>
+
                 </div>
 
-                {{-- Today Stats --}}
-                <div class="bg-white rounded-lg border border-gray-200 p-6">
-                    <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">Statistik Hari Ini</h3>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                </div>
-                                <span class="text-sm text-gray-600">Dilayani</span>
-                            </div>
-                            <span class="text-xl font-bold text-gray-900">{{ $todayServed }}</span>
+                {{-- Right: Stats + Queue --}}
+                <div class="space-y-4">
+
+                    {{-- Stats Cards --}}
+                    <div class="space-y-3">
+                        {{-- Current Ticket --}}
+                        <div class="bg-slate-800 border-l-4 border-blue-500 rounded-lg p-4">
+                            <div class="text-xs text-slate-400 font-semibold mb-1">Sedang Dilayani</div>
+                            @if($currentCounter && $currentCounter->currentTicket)
+                                <div class="text-3xl font-black text-blue-400 font-mono">{{ $currentCounter->currentTicket->ticket_number }}</div>
+                                <div class="text-xs text-slate-500 mt-1">Sejak {{ $currentCounter->currentTicket->called_at ? $currentCounter->currentTicket->called_at->format('H:i') : '-' }}</div>
+                            @else
+                                <div class="text-2xl font-bold text-slate-600">—</div>
+                            @endif
                         </div>
 
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                </div>
-                                <span class="text-sm text-gray-600">Ditolak</span>
-                            </div>
-                            <span class="text-xl font-bold text-gray-900">{{ $todayRejected }}</span>
-                        </div>
-
-                        <div class="pt-4 border-t border-gray-200">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-semibold text-gray-700">Total</span>
-                                <span class="text-2xl font-bold text-slate-900">{{ $todayServed + $todayRejected }}</span>
-                            </div>
+                        {{-- Next in Queue --}}
+                        <div class="bg-slate-800 border-l-4 border-amber-500 rounded-lg p-4">
+                            <div class="text-xs text-slate-400 font-semibold mb-1">Antrian Berikutnya</div>
+                            @if($waitingTickets->isNotEmpty())
+                                <div class="text-3xl font-black text-amber-400 font-mono">{{ $waitingTickets->first()->ticket_number }}</div>
+                                <div class="text-xs text-slate-500 mt-1">{{ $waitingTickets->count() }} menunggu</div>
+                            @else
+                                <div class="text-2xl font-bold text-slate-600">—</div>
+                                <div class="text-xs text-slate-500 mt-1">Tidak ada</div>
+                            @endif
                         </div>
                     </div>
+
+                    {{-- Waiting Queue List --}}
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                        <div class="px-4 py-3 border-b border-slate-700 flex items-center justify-between bg-slate-750">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-sm font-bold text-white">Antrean Menunggu</h3>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400">
+                                    {{ $waitingTickets->count() }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="max-h-96 overflow-y-auto">
+                            @forelse($waitingTickets->take(10) as $index => $wt)
+                                <div class="px-4 py-3 flex items-center justify-between border-b border-slate-700/50 {{ $index === 0 ? 'bg-blue-500/10' : '' }}">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-7 h-7 rounded-full bg-slate-700 text-slate-400 font-mono text-xs flex items-center justify-center font-bold">
+                                            {{ $index + 1 }}
+                                        </span>
+                                        <div>
+                                            <div class="font-bold text-white font-mono">{{ $wt->ticket_number }}</div>
+                                            <div class="text-xs text-slate-500">{{ $wt->created_at->format('H:i') }}</div>
+                                        </div>
+                                    </div>
+                                    @if($index === 0)
+                                        <span class="text-xs font-bold text-blue-400 uppercase">Next</span>
+                                    @endif
+                                </div>
+                            @empty
+                                <div class="px-4 py-8 text-center text-slate-500">
+                                    <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                    <p class="text-sm font-semibold">Tidak ada antrian</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+
                 </div>
 
-                {{-- Quick Call Button (when has current ticket) --}}
-                @if($myCounter->currentTicket && $counterStatus === 'active')
-                    <button wire:click="callNext"
-                            class="w-full px-6 py-4 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800 transition-colors flex items-center justify-center gap-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        Panggil Berikutnya
+            </div>
+        </div>
+    </div>
+
+    {{-- Transfer Modal --}}
+    @if($showTransferModal)
+        <div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-8" wire:click="closeTransferModal">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md w-full" @click.stop>
+                <h3 class="text-xl font-bold text-white mb-4">Transfer Antrean</h3>
+                <p class="text-sm text-slate-400 mb-4">Pilih layanan tujuan untuk mentransfer antrean saat ini</p>
+
+                <div class="space-y-2 mb-6">
+                    @foreach($services as $svc)
+                        <button type="button"
+                                wire:click="$set('transferServiceId', {{ $svc->id }})"
+                                class="w-full px-4 py-3 rounded-lg text-left transition border {{ $transferServiceId === $svc->id ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600' }}">
+                            <div class="font-bold">{{ $svc->name }}</div>
+                            <div class="text-xs opacity-80">{{ $svc->description }}</div>
+                        </button>
+                    @endforeach
+                </div>
+
+                <div class="flex gap-3">
+                    <button wire:click="closeTransferModal"
+                            class="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg font-semibold transition">
+                        Batal
                     </button>
-                @endif
+                    <button wire:click="executeTransfer"
+                            class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+                        Transfer
+                    </button>
+                </div>
             </div>
         </div>
     @endif
+
 </div>

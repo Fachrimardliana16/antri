@@ -1,4 +1,40 @@
-<div class="h-screen overflow-hidden flex flex-col bg-gray-50">
+"<div class=\"h-screen flex flex-col bg-gray-50\">
+    {{-- Header dengan User Info --}}
+    <header class=\"bg-white border-b border-gray-200 shadow-sm flex-shrink-0\">
+        <div class=\"px-6 py-4 flex items-center justify-between\">
+            <div class=\"flex items-center gap-3\">
+                <div class=\"w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center\">
+                    <svg class=\"w-6 h-6 text-white\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">
+                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z\"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class=\"text-lg font-bold text-gray-900\">Panel Operator</div>
+                    <div class=\"text-xs text-gray-500\">Sistem Antrian</div>
+                </div>
+            </div>
+
+            <div class=\"flex items-center gap-4\">
+                @auth
+                    <div class=\"flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-lg border border-gray-200\">
+                        <div class=\"w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-sm font-bold\">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                        </div>
+                        <div>
+                            <div class=\"text-sm font-semibold text-gray-900\">{{ auth()->user()->name }}</div>
+                            <div class=\"text-xs text-gray-500\">Operator</div>
+                        </div>
+                    </div>
+                    <form method=\"POST\" action=\"{{ route('logout') }}\">
+                        @csrf
+                        <button type=\"submit\" class=\"px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50\">
+                            Keluar
+                        </button>
+                    </form>
+                @endauth
+            </div>
+        </div>
+    </header>"
     @if(!$myCounter)
         <div class="flex-1 flex items-center justify-center">
             <div class="text-center max-w-md bg-white rounded-2xl p-12 shadow-lg">
@@ -34,7 +70,7 @@
                         {{-- Status Buttons --}}
                         <div class="flex items-center gap-3">
                             @if($counterStatus === 'closed')
-                                <button wire:click="openCounter" 
+                                <button wire:click="openCounter"
                                         class="px-8 py-4 bg-emerald-600 text-white text-lg font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-lg hover:shadow-xl">
                                     <div class="flex items-center gap-3">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,11 +84,11 @@
                                     <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
                                     <span class="text-lg font-bold text-emerald-700">Loket Aktif</span>
                                 </div>
-                                <button wire:click="takeBreak" 
+                                <button wire:click="takeBreak"
                                         class="px-6 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-colors">
                                     Istirahat
                                 </button>
-                                <button wire:click="closeCounter" 
+                                <button wire:click="closeCounter"
                                         class="px-6 py-3 bg-gray-600 text-white font-bold rounded-xl hover:bg-gray-700 transition-colors">
                                     Tutup Loket
                                 </button>
@@ -61,7 +97,7 @@
                                     <div class="w-3 h-3 rounded-full bg-amber-500"></div>
                                     <span class="text-lg font-bold text-amber-700">Istirahat</span>
                                 </div>
-                                <button wire:click="openCounter" 
+                                <button wire:click="openCounter"
                                         class="px-6 py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-colors">
                                     Aktifkan Kembali
                                 </button>
@@ -142,7 +178,7 @@
                 {{-- Next in Queue --}}
                 <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 text-white shadow-lg">
                     <h3 class="text-sm font-bold uppercase tracking-wider opacity-75 mb-4">Antrian Berikutnya</h3>
-                    
+
                     @if($nextTicket)
                         <div class="text-center py-6">
                             <div class="text-7xl font-black mb-3 font-mono">{{ $nextTicket->ticket_number }}</div>
@@ -166,7 +202,7 @@
                 {{-- Today Stats --}}
                 <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 flex-1">
                     <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-6">Statistik Hari Ini</h3>
-                    
+
                     <div class="space-y-6">
                         <div class="flex items-center gap-4">
                             <div class="w-16 h-16 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">

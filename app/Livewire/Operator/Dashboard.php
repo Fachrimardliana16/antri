@@ -14,7 +14,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-#[Layout('layouts.app')]
+#[Layout('layouts.operator-minimal')]
 class Dashboard extends Component
 {
     public ?int $selectedCounterId = null;
@@ -25,17 +25,23 @@ class Dashboard extends Component
     public function mount()
     {
         $user = Auth::user();
-        if ($user->assigned_counter_id) {
-            $this->selectedCounterId = $user->assigned_counter_id;
-        } else {
-            $firstCounter = Counter::first();
-            $this->selectedCounterId = $firstCounter ? $firstCounter->id : null;
+
+        // Operator MUST have assigned counter
+        if (!$user->assigned_counter_id) {
+            session()->flash('error', 'Anda belum ditugaskan ke loket manapun. Hubungi administrator.');
+            $this->selectedCounterId = null;
+            return;
         }
+
+        // Lock operator to their assigned counter only
+        $this->selectedCounterId = $user->assigned_counter_id;
 
         if ($this->selectedCounterId) {
             $counter = Counter::find($this->selectedCounterId);
             if ($counter) {
                 $this->counterStatus = $counter->status;
+                // Set current operator
+                $counter->update(['current_operator_id' => $user->id]);
             }
         }
     }
@@ -49,12 +55,19 @@ class Dashboard extends Component
 
     public function setCounter(int $counterId)
     {
+        // BLOCK: Operators cannot switch counters
+        $user = Auth::user();
+        if ($user->isOperator() && $user->assigned_counter_id !== $counterId) {
+            session()->flash('error', 'Anda tidak memiliki akses ke loket tersebut.');
+            return;
+        }
+
+        // Admin can switch
         $this->selectedCounterId = $counterId;
         $counter = Counter::find($counterId);
         if ($counter) {
             $this->counterStatus = $counter->status;
             $counter->update(['current_operator_id' => Auth::id()]);
-            Auth::user()->update(['assigned_counter_id' => $counterId]);
         }
     }
 
@@ -387,7 +400,7 @@ class Dashboard extends Component
             ->whereDate('queue_date', today())
             ->count();
 
-        return view('livewire.operator.dashboard', [
+        return view('livewire.operator.dashboard-new', [
             'counters' => $counters,
             'currentCounter' => $currentCounter,
             'services' => $services,

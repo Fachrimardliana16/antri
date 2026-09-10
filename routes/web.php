@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Admin\Analytics;
+use App\Livewire\Admin\Announcements;
 use App\Livewire\Admin\Counters;
 use App\Livewire\Admin\Services;
 use App\Livewire\Admin\Settings;
@@ -50,6 +51,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/services', Services::class)->name('services');
     Route::get('/counters', Counters::class)->name('counters');
     Route::get('/users', Users::class)->name('users');
+    Route::get('/announcements', Announcements::class)->name('announcements');
 });
 
 // 6. Authenticated Super Admin Area (Theme Engine & Root Config)

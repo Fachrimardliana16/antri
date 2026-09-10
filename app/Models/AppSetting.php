@@ -39,10 +39,12 @@ class AppSetting extends Model
             $settings = static::pluck('value', 'key')->toArray();
             return array_merge([
                 'app_name' => 'Sistem Antrian Terpadu',
-                'primary_color' => '#2563eb', // Modern vibrant Indigo/Blue
-                'secondary_color' => '#06b6d4', // Cyan accent
+                'kiosk_subtitle' => 'Ambil Nomor Antrian',
+                'tv_subtitle' => 'Monitor Panggilan Antrian',
+                'primary_color' => '#2563eb',
+                'secondary_color' => '#06b6d4',
                 'logo_url' => '',
-                'marquee_text' => 'Selamat datang di Sistem Layanan Terpadu. Mohon menunggu nomor antrean Anda dipanggil.',
+                'marquee_text' => 'Harap perhatikan nomor antrian Anda dan segera datang saat dipanggil • Pelayanan dimulai pukul 08:00 - 16:00 • Terima kasih atas kunjungan Anda',
                 'video_url' => 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1',
                 'voice_rate' => '0.9',
                 'voice_pitch' => '1.0',
