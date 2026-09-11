@@ -8,6 +8,7 @@ use App\Models\Counter;
 use App\Models\QueueLog;
 use App\Models\QueueTicket;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
@@ -24,6 +25,7 @@ class Dashboard extends Component
 
     public function mount()
     {
+        /** @var User $user */
         $user = Auth::user();
 
         // Operator MUST have assigned counter
@@ -56,6 +58,7 @@ class Dashboard extends Component
     public function setCounter(int $counterId)
     {
         // BLOCK: Operators cannot switch counters
+        /** @var User $user */
         $user = Auth::user();
         if ($user->isOperator() && $user->assigned_counter_id !== $counterId) {
             session()->flash('error', 'Anda tidak memiliki akses ke loket tersebut.');

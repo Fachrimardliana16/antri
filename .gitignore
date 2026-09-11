@@ -25,3 +25,14 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Agent/local tooling
+/.agents
+/.claude
+
+# Editor and temp
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace

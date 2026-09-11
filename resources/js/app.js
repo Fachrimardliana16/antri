@@ -1,6 +1,7 @@
 import './echo';
 import './audio';
 import './printer';
+import './theme';
 
 // Dynamic Theme Listener: when theme updates via WebSocket, update CSS variables instantly
 document.addEventListener('DOMContentLoaded', () => {

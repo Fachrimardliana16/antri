@@ -16,6 +16,9 @@ class Announcement extends Model
         'icon_color',
         'order',
         'is_active',
+        'media_type',
+        'media_path',
+        'youtube_url',
     ];
 
     protected $casts = [

@@ -6,50 +6,112 @@
 @source '../../app/Livewire/**/*.php';
 
 /* ============================================
-   SISTEM ANTRIAN TERPADU - GOVERNMENT THEME
-   Clean, Elegant, Professional Light Mode
+   SISTEM ANTRIAN TERPADU - DUAL THEME
+   Professional Light & Dark Mode Support
    ============================================ */
 
 :root {
-    --primary: #1a56a8;       /* Institutional Blue */
+    /* Light Mode Colors */
+    --primary: #1a56a8;
     --primary-dark: #154091;
     --primary-light: #e8f0fb;
     --secondary: #2d7dd2;
-    --accent: #c8a84b;        /* Gold accent */
-    --text-heading: #0f2044;
-    --text-body: #374151;
-    --text-muted: #6b7280;
-    --border: #e5e7eb;
-    --bg: #f9fafb;
-    --surface: #ffffff;
+    --accent: #c8a84b;
+
+    /* Light Mode Surfaces */
+    --bg-base: #f9fafb;
+    --bg-surface: #ffffff;
+    --bg-elevated: #ffffff;
+    --bg-hover: #f3f4f6;
+
+    /* Light Mode Text */
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+
+    /* Light Mode Borders */
+    --border-default: #e5e7eb;
+    --border-light: #f3f4f6;
+
+    /* Light Mode Sidebar (Admin) */
+    --sidebar-bg: #0f172a;
+    --sidebar-hover: #1e293b;
+    --sidebar-border: #1e293b;
+    --sidebar-text: #cbd5e1;
+    --sidebar-text-active: #ffffff;
+}
+
+/* Dark Mode Colors */
+[data-theme="dark"] {
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-light: #1e3a8a;
+    --secondary: #60a5fa;
+    --accent: #fbbf24;
+
+    /* Dark Mode Surfaces */
+    --bg-base: #0a0f1e;
+    --bg-surface: #111827;
+    --bg-elevated: #1f2937;
+    --bg-hover: #374151;
+
+    /* Dark Mode Text */
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+
+    /* Dark Mode Borders */
+    --border-default: #374151;
+    --border-light: #1f2937;
+
+    /* Dark Mode Sidebar (Admin) */
+    --sidebar-bg: #111827;
+    --sidebar-hover: #1f2937;
+    --sidebar-border: #374151;
+    --sidebar-text: #d1d5db;
+    --sidebar-text-active: #ffffff;
 }
 
 /* Base Typography */
 body {
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Instrument Sans', 'Inter', sans-serif;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ============================================
    LAYOUT CARDS & PANELS
    ============================================ */
 .gov-card {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
     border-radius: 0.75rem;
     box-shadow: 0 1px 4px 0 rgba(0,0,0,0.06);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="dark"] .gov-card {
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.3);
 }
 
 .gov-panel {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
     border-radius: 1rem;
     box-shadow: 0 2px 8px 0 rgba(0,0,0,0.05);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="dark"] .gov-panel {
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
 }
 
 .gov-inset {
-    background-color: #f3f7fd;
-    border: 1px solid #dce8f8;
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border-light);
     border-radius: 0.5rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* ============================================
@@ -62,10 +124,20 @@ body {
     box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
+[data-theme="dark"] .dark-card {
+    background: linear-gradient(145deg, #1f2937, #111827);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
 .dark-card-active {
     background: linear-gradient(145deg, #1a4080, #123268);
     border: 1px solid rgba(255,255,255,0.15);
     box-shadow: 0 0 0 2px rgba(59,130,246,0.4), 0 4px 16px rgba(0,0,0,0.3);
+}
+
+[data-theme="dark"] .dark-card-active {
+    background: linear-gradient(145deg, #2563eb, #1d4ed8);
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 /* ============================================
@@ -77,16 +149,34 @@ body {
     border: 1px solid #bbf7d0;
 }
 
+[data-theme="dark"] .badge-active {
+    background-color: #064e3b;
+    color: #6ee7b7;
+    border: 1px solid #065f46;
+}
+
 .badge-break {
     background-color: #fef9c3;
     color: #713f12;
     border: 1px solid #fde047;
 }
 
+[data-theme="dark"] .badge-break {
+    background-color: #78350f;
+    color: #fcd34d;
+    border: 1px solid #92400e;
+}
+
 .badge-closed {
     background-color: #fee2e2;
     color: #991b1b;
     border: 1px solid #fca5a5;
+}
+
+[data-theme="dark"] .badge-closed {
+    background-color: #7f1d1d;
+    color: #fca5a5;
+    border: 1px solid #991b1b;
 }
 
 /* ============================================
@@ -99,7 +189,7 @@ body {
     font-weight: 600;
     border-radius: 0.5rem;
     padding: 0.625rem 1.25rem;
-    transition: background-color 0.15s, transform 0.1s;
+    transition: all 0.15s ease;
     cursor: pointer;
 }
 
@@ -109,6 +199,41 @@ body {
 
 .btn-primary:active {
     transform: scale(0.98);
+}
+
+.btn-secondary {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+    font-weight: 600;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-hover);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
 }
 
 /* ============================================
@@ -159,4 +284,51 @@ body {
 
 .animate-status-blink {
     animation: statusBlink 1.2s ease-in-out infinite;
+}
+
+/* ============================================
+   RESPONSIVE TABLE
+   ============================================ */
+[data-theme="dark"] table thead {
+    background-color: var(--bg-elevated);
+}
+
+[data-theme="dark"] table tbody tr:hover {
+    background-color: var(--bg-hover);
+}
+
+[data-theme="dark"] table tbody tr {
+    border-color: var(--border-default);
+}
+
+/* ============================================
+   FORM INPUTS
+   ============================================ */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+textarea,
+select {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border-color: var(--border-default);
+    transition: all 0.15s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary);
+    outline: none;
+    ring: 1px;
+    ring-color: var(--primary);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: var(--text-muted);
 }
